@@ -1,4 +1,14 @@
 {
+  "description": "generates random strings and numbers through sampling",
+  "keywords": [
+    "csprng",
+    "random",
+    "generator",
+    "csprsg"
+  ],
+  "license": "MIT",
+  "main": "index.js",
   "name": "dimitri",
-  "version": "0.1.1"
+  "repository": "beingbrown/dimitri",
+  "version": "0.1.2"
 }
