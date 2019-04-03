@@ -42,6 +42,19 @@ const getString = validCharsString => {
   return len => genStringOfLen("", len);
 };
 
+function* stringGenerator(validCharString, len) {
+  const opts = validCharString.split("");
+
+  const genStringOfLen = (curr, len) => {
+    if(len <= 0) return curr;
+    return genStringOfLen(curr + opts[getRandInRange(0, opts.length - 1)], len - 1);
+  };
+
+  while(true) {
+    yield genStringOfLen("", len);
+  }
+}
+
 // console.log(getString("abc")(5));
 
 module.exports = {getRandInRange, getString};
