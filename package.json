@@ -9,6 +9,6 @@
   "license": "MIT",
   "main": "index.js",
   "name": "dimitri",
-  "repository": "beingbrown/dimitri",
-  "version": "0.1.2"
+  "repository": "thatrandybrown/dimitri",
+  "version": "0.1.3"
 }
