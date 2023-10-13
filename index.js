@@ -1,4 +1,4 @@
-var crypto = require('crypto');
+import crypto from 'crypto';
 
 if(typeof window !== 'undefined') throw new Error("This module is not safe for client execution");
 
@@ -25,13 +25,13 @@ const sample = (range, rangeCheck, coerce) => {
 // get rand in range could easily invoke sample directly
 const randIntBelow = val => sample(val, isInExtendedRange, unsafeCoerce);
 
-const getRandInRange = (min, max) => {
+export const getRandInRange = (min, max) => {
   const lo = Math.ceil(min);
   const hi = Math.floor(max);
   return lo + randIntBelow(hi - lo + 1);
 };
 
-const getString = validCharsString => {
+export const getString = validCharsString => {
   const opts = validCharsString.split("");
 
   const genStringOfLen = (curr, len) => {
@@ -56,5 +56,3 @@ function* stringGenerator(validCharString, len) {
 }
 
 // console.log(getString("abc")(5));
-
-module.exports = {getRandInRange, getString};
