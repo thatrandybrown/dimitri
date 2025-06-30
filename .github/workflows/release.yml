@@ -1,0 +1,66 @@
+name: Release
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  release:
+    name: Release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          # ref: ${{ github.event.pull_request.head.ref }}
+      - name: print branch name
+        run: |
+          echo "Branch: ${{ github.ref }}"
+          echo "Pull Request: ${{ github.event.pull_request.number }}"
+          echo "Pull Request Title: ${{ github.event.pull_request.title }}"
+          echo "Pull Request Branch: ${{ github.event.pull_request.head.ref }}"
+          # git checkout ${{ github.event.pull_request.head.ref }}
+      - name: Figure out how to change the head
+        run: |
+          git log --oneline -n 10
+          git branch -v
+          git show HEAD
+      - name: Temporarily merge PR branch
+        if: ${{ github.event_name == 'pull_request' }}
+        run: |
+          git config --global user.name github-actions
+          git config --global user.email github-actions@github.com
+          git checkout main
+          git merge --no-ff origin/${{ github.event.pull_request.head.ref }} --message "${{ github.event.pull_request.title }}"
+      - name: Semantic Release
+        uses: cycjimmy/semantic-release-action@v4
+        id: semantic   # Need an `id` for output variables
+        with:
+          dry_run: true
+          ci: false
+          unset_gha_env: ${{ github.event_name == 'pull_request' }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_PAT }}
+          NPM_TOKEN: ${{ secrets.GH_PAT }}
+      - name: Do something when a new release published
+        if: steps.semantic.outputs.new_release_published == 'true'
+        run: |
+          echo ${{ steps.semantic.outputs.new_release_version }}
+          echo ${{ steps.semantic.outputs.new_release_major_version }}
+          echo ${{ steps.semantic.outputs.new_release_minor_version }}
+          echo ${{ steps.semantic.outputs.new_release_patch_version }}
+      - name: Comment on PR with release info
+        if: steps.semantic.outputs.new_release_published == 'true'
+        uses: thollander/actions-comment-pull-request@v3
+        with:
+          message: |
+            PR will trigger release of v${{ steps.semantic.outputs.new_release_version }} !
+          comment-tag: version
+      # - name: Run semantic release without dry run
+      #   uses: cycjimmy/semantic-release-action@v4
+      #   if: ${{ github.event_name == 'push' }}
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GH_PAT }}
+      #     NPM_TOKEN: ${{ secrets.GH_PAT }}
