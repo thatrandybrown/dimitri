@@ -43,7 +43,7 @@ jobs:
           unset_gha_env: ${{ github.event_name == 'pull_request' }}
         env:
           GITHUB_TOKEN: ${{ secrets.GH_PAT }}
-          NPM_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN }}
+          NPM_TOKEN: ${{ secrets.GH_PAT }}
       - name: Do something when a new release published
         if: steps.semantic.outputs.new_release_published == 'true'
         run: |
