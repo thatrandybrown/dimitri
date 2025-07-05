@@ -58,9 +58,9 @@ jobs:
           message: |
             PR will trigger release of v${{ steps.semantic.outputs.new_release_version }} !
           comment-tag: version
-      # - name: Run semantic release without dry run
-      #   uses: cycjimmy/semantic-release-action@v4
-      #   if: ${{ github.event_name == 'push' }}
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GH_PAT }}
-      #     NPM_TOKEN: ${{ secrets.GH_PAT }}
+      - name: Run semantic release without dry run
+        uses: cycjimmy/semantic-release-action@v4
+        if: ${{ github.event_name == 'push' }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_PAT }}
+          NPM_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN }}
